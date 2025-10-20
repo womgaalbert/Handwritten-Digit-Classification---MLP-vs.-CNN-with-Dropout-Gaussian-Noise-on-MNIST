@@ -21,6 +21,7 @@ Model Architectures
 •	MLP Baseline: Dense layers only (no regularization). This serves as a control.
 •	MLP + Dropout: A dropout layer (rate 0.5) is inserted (after the hidden layer) during training, dropping half the units randomly each update to prevent overfitting.
 •	MLP + Gaussian Noise: A GaussianNoise layer (stddev=0.2) is added (after the hidden layer) during training. This injects random noise to the activations, forcing the network to learn noise-robust features.
+<img width="1035" height="365" alt="image" src="https://github.com/user-attachments/assets/399c4cfe-797d-466c-845c-9723461ca2c2" />
 
  
 2. Convolutional Neural Network (CNN): The CNN architecture is inspired by LeNet-5 style networks. It uses convolutional layers to exploit image spatial structure[2]. In this project, the CNN has two convolutional layers (with ReLU) each followed by a max-pooling layer, then a flatten and dense output. The conv layers learn local patterns (like strokes) and pooling provides spatial invariance.
