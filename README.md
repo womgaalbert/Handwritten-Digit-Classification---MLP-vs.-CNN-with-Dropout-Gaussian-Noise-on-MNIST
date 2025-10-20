@@ -1,0 +1,2 @@
+# Handwritten-Digit-Classification---MLP-vs.-CNN-with-Dropout-Gaussian-Noise-on-MNIST
+The goal is simple: achieve high accuracy in classifying MNIST digits, and observe how each model variant performs. An MLP treats the image as a flat vector of 784 features, while a CNN exploits the 2D structure of the image. MLPs ignore spatial patterns, whereas CNNs capture local spatial features like strokes or edges. 
