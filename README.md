@@ -68,9 +68,9 @@ Several observations can be made from these curves:
  ![Comparison of model](images/model_comparison.png)  
 *Comparison of accuracy and loss of the models*
 In summary, the CNN + GaussianNoise model emerged as the top performer on validation data, closely followed by CNN + Dropout, then the baseline CNN. All CNN variants outperformed the MLP variants. The regularized MLPs did better than the plain MLP, but still fell short of CNNs. This confirms that architecture plays a larger role than these regularization methods for this task – CNN’s built-in advantages trump the MLP’s best regularized efforts. Regularization did narrow the gap slightly for the MLP (and helped the CNN hit the 99%+ range reliably).
-![Model](images/Model.png)  
+![Model](images/model.png)  
 *Model description*
- ![CNN + Gaussian Noise](images/cnn_gn_architecture.png)  
+ ![CNN + Gaussian Noise](images/cnn_gn_architecture.jpg)  
 *Final Convolutional Network + Gaussian Noise architecture*
 Test Set Performance and Confusion Matrix
 After selecting the final models, we evaluated on the 10,000-image test set. The best model (CNN with Gaussian noise) achieved 99.2% accuracy on test data, misclassifying only 81 out of 10,000 digits[12]. For context, this is on par with many standard CNN results on MNIST. The baseline CNN was only slightly behind (~98.9-99.1% range), and the MLP models achieved in the high 98% range.
