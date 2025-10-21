@@ -21,13 +21,15 @@ Model Architectures
 •	MLP Baseline: Dense layers only (no regularization). This serves as a control.
 •	MLP + Dropout: A dropout layer (rate 0.5) is inserted (after the hidden layer) during training, dropping half the units randomly each update to prevent overfitting.
 •	MLP + Gaussian Noise: A GaussianNoise layer (stddev=0.2) is added (after the hidden layer) during training. This injects random noise to the activations, forcing the network to learn noise-robust features.
-<img width="1035" height="365" alt="image" src="https://github.com/user-attachments/assets/399c4cfe-797d-466c-845c-9723461ca2c2" />
-
+![MLP Architecture](images/mpl_architecture.png)  
+*Multi-layer Perceptron architecture*
  
 2. Convolutional Neural Network (CNN): The CNN architecture is inspired by LeNet-5 style networks. It uses convolutional layers to exploit image spatial structure[2]. In this project, the CNN has two convolutional layers (with ReLU) each followed by a max-pooling layer, then a flatten and dense output. The conv layers learn local patterns (like strokes) and pooling provides spatial invariance.
 •	CNN Baseline: Two conv layers (e.g. 32 filters and 64 filters of size 3×3) + pooling, then a dense output layer (10 classes).
 •	CNN + Dropout: A dropout layer (rate 0.5) is added after flattening (i.e. before the final dense layer). This drops half the features before the output layer during training.
 •	CNN + Gaussian Noise: A GaussianNoise layer (stddev=0.2) is added after flattening (instead of dropout) to perturb the feature vector before the output layer.
+![CNN + Gaussian Noise](images/cnn_image_Mnist.png)   
+*Convolutional Network + Gaussian Noise architecture*
  
 Illustration of the CNN architecture used (Conv → Conv → Flatten → Dense). Dropout (0.5) or Gaussian noise could be applied to the flattened 1600-dimensional feature vector before the final output. The MLP (not shown) uses a single dense hidden layer instead of conv layers.
 Each model is compiled with Adam optimizer and categorical cross-entropy loss (appropriate for multi-class classification). We track accuracy as the primary metric.
@@ -63,13 +65,19 @@ Several observations can be made from these curves:
 •	Regularization helps generalization: Both dropout and Gaussian noise improved performance or stability. The MLP+Dropout and MLP+Noise variants ended up with slightly higher accuracy than the vanilla MLP, indicating less overfitting. Likewise, CNN+Dropout and CNN+Noise both matched or exceeded the baseline CNN’s accuracy. Regularization provides a small but noticeable boost in generalization by reducing overfit tendencies[10][11].
 •	Stability of training: The models with noise or dropout showed smoother training curves (less volatility in the accuracy from epoch to epoch), especially the CNN+Noise model. The added noise acts like a form of data augmentation each epoch, resulting in more stable convergence[11]. All models tended to converge by around epoch 30-50, after which gains were minimal.
 •	Dropout vs. Noise: The outcomes of using dropout versus Gaussian noise were broadly similar in this experiment. Neither regularization dramatically improved final accuracy over the other. However, we did notice that the GaussianNoise variant on CNN achieved the highest peak accuracy (around 99.2% val accuracy) by a small margin. Gaussian noise provides continuous perturbation (rather than dropout’s binary mask), which might have helped the CNN squeeze out a bit more performance. Both techniques, however, were beneficial and their curves closely tracked each other for both MLP and CNN cases.
- 
+ ![Comparison of model](images/model_comparison.png)  
+*Comparison of accuracy and loss of the models*
 In summary, the CNN + GaussianNoise model emerged as the top performer on validation data, closely followed by CNN + Dropout, then the baseline CNN. All CNN variants outperformed the MLP variants. The regularized MLPs did better than the plain MLP, but still fell short of CNNs. This confirms that architecture plays a larger role than these regularization methods for this task – CNN’s built-in advantages trump the MLP’s best regularized efforts. Regularization did narrow the gap slightly for the MLP (and helped the CNN hit the 99%+ range reliably).
- 
+![Model](images/Model.png)  
+*Model description*
+ ![CNN + Gaussian Noise](images/cnn_gn_architecture.png)  
+*Final Convolutional Network + Gaussian Noise architecture*
 Test Set Performance and Confusion Matrix
 After selecting the final models, we evaluated on the 10,000-image test set. The best model (CNN with Gaussian noise) achieved 99.2% accuracy on test data, misclassifying only 81 out of 10,000 digits[12]. For context, this is on par with many standard CNN results on MNIST. The baseline CNN was only slightly behind (~98.9-99.1% range), and the MLP models achieved in the high 98% range.
 Below is the confusion matrix for the CNN+Noise model’s predictions on the test set:
  
+  ![CONFUSION MATRIX ANALYSIS](images/confusion_matrix.png)  
+*CONFUSION MATRIX ANALYSIS*
 Confusion matrix for the best model (CNN + GaussianNoise) on 10,000 test images. Rows are true labels 0–9, columns are predicted labels. Most confusion is very minimal (off-diagonal counts are near zero).
 As shown above, the model performs extremely well across all digit classes. The diagonal entries dominate (e.g. 975/1000 “0” images correctly classified as 0, 1131/1135 “1” images classified as 1, etc.), and off-diagonal errors are rare. No single digit suffered significantly more misclassifications than others – errors are distributed fairly evenly. This is expected given the dataset is balanced and the model has near-perfect overall accuracy. A few observations:
 •	The worst confusion in this run was the model mistaking some 5’s as 3’s or 8’s (see row for true 5: a few cases predicted 3 or 8) and some 9’s as 4’s. These mistakes are understandable since those digits can look similar if written unclearly.
@@ -77,7 +85,8 @@ As shown above, the model performs extremely well across all digit classes. The 
 Note: Achieving >99% on MNIST is relatively easy for modern CNNs[13][14]. The intent here was not to beat SOTA but to compare models. As expected, even a simple CNN outperforms a fully-connected MLP on image data by a significant margin[8]. Regularization (dropout/noise) further boosts generalization slightly, but cannot compensate for the absence of convolutional layers in the MLP.
 Example Misclassified Digits
 To get a better sense of what mistakes the model made, we can visualize some of the misclassified examples. Below are a few test images the top model got wrong, along with their true and predicted labels:
- 
+   ![Misclassified Digits](images/misclassified_digits.png)  
+   *Misclassified Digits*
 Examples of misclassified digits by the CNN model. Each sub-image shows the input digit with its true label and the model’s prediction. These typically include unusual or ambiguous handwriting (e.g., a poorly written "9" mistaken for a "5").
 Even among the errors, one can see why the model struggled: some digits are written in atypical ways (for instance, the first image above is a 9 that the model predicted as 5 – it has an open top loop like a 5). Another example is a 2 that was predicted as 7 (second image, top row) – the curve on the bottom of the 2 is very light, making it look like a 7. Such cases reflect limitations of the dataset (some writing styles are confusing) rather than a fundamental flaw in the model. With data augmentation or ensembling, some of these errors could potentially be eliminated, but for a single model training, 99%+ accuracy is near the ceiling on MNIST.
 How to Use the Code
