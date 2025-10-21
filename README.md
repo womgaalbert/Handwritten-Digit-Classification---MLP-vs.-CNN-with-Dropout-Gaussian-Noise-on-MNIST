@@ -15,17 +15,18 @@ The goal is simple: achieve high accuracy in classifying MNIST digits, and obser
 •	Gaussian Noise Injection: Adding random noise (here, Gaussian with stddev 0.2) to layer inputs is another form of regularization[6]. The “SD” variant in this project refers to injecting Gaussian noise, which encourages the model to learn stable patterns despite perturbations[7]. This is analogous to dropout in its regularization effect.
 By comparing MLP, MLP+Dropout, MLP+Noise against CNN, CNN+Dropout, CNN+Noise, this project reveals how much of the performance gain comes from architecture vs. from regularization.
 
-Dataset Overview
+#Dataset Overview
 The MNIST dataset contains 60,000 training images and 10,000 test images of handwritten digits 0 through 9[1]. Each image is 28×28 pixels (one channel). The classes are perfectly balanced (~6000 examples of each digit in the train set, ~1000 each in test), so accuracy is a suitable performance metric. No complex preprocessing is needed beyond scaling pixel values to [0,1].
-Model Architectures
-1. Multi-Layer Perceptron (MLP): The MLP is a simple feed-forward network. In this project, it consists of a flatten layer (28×28 → 784) feeding into at least one dense hidden layer with ReLU activation, and an output layer of 10 neurons with softmax. The exact hidden layer size was tuned to get a similar order of magnitude of parameters as the CNN (~ tens of thousands of weights).
+
+# Model Architectures
+  **1. Multi-Layer Perceptron (MLP):** The MLP is a simple feed-forward network. In this project, it consists of a flatten layer (28×28 → 784) feeding into at least one dense hidden layer with ReLU activation, and an output layer of 10 neurons with softmax. The exact hidden layer size was tuned to get a similar order of magnitude of parameters as the CNN (~ tens of thousands of weights).
 •	MLP Baseline: Dense layers only (no regularization). This serves as a control.
 •	MLP + Dropout: A dropout layer (rate 0.5) is inserted (after the hidden layer) during training, dropping half the units randomly each update to prevent overfitting.
 •	MLP + Gaussian Noise: A GaussianNoise layer (stddev=0.2) is added (after the hidden layer) during training. This injects random noise to the activations, forcing the network to learn noise-robust features.
 ![MLP Architecture](images/mpl_architecture.png)  
 *Multi-layer Perceptron architecture*
  
-2. Convolutional Neural Network (CNN): The CNN architecture is inspired by LeNet-5 style networks. It uses convolutional layers to exploit image spatial structure[2]. In this project, the CNN has two convolutional layers (with ReLU) each followed by a max-pooling layer, then a flatten and dense output. The conv layers learn local patterns (like strokes) and pooling provides spatial invariance.
+  **2. Convolutional Neural Network (CNN)**: The CNN architecture is inspired by LeNet-5 style networks. It uses convolutional layers to exploit image spatial structure[2]. In this project, the CNN has two convolutional layers (with ReLU) each followed by a max-pooling layer, then a flatten and dense output. The conv layers learn local patterns (like strokes) and pooling provides spatial invariance.
 •	CNN Baseline: Two conv layers (e.g. 32 filters and 64 filters of size 3×3) + pooling, then a dense output layer (10 classes).
 •	CNN + Dropout: A dropout layer (rate 0.5) is added after flattening (i.e. before the final dense layer). This drops half the features before the output layer during training.
 •	CNN + Gaussian Noise: A GaussianNoise layer (stddev=0.2) is added after flattening (instead of dropout) to perturb the feature vector before the output layer.
