@@ -4,9 +4,9 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Jupyter](https://img.shields.io/badge/Jupyter-Python-orange)
 
-# MNIST Digit Classification – MLP vs. CNN (with Dropout & Gaussian Noise)
-
 MNIST Handwritten Digits is a classic benchmark dataset of 70,000 grayscale images of handwritten digits (0-9) at 28×28 pixels[1]. In this solo project, I built and evaluated two types of neural network models – a Multi-Layer Perceptron (MLP) and a Convolutional Neural Network (CNN) – under three configurations each: baseline, with Dropout regularization, and with Gaussian noise injection. This side-by-side comparison highlights how model architecture and regularization technique affect performance on the same task.
+
+
 **Why This Project Is Unique**: Unlike typical MNIST examples focusing on one model, this project directly compares an MLP and a CNN under identical conditions, with and without dropout or noise. This provides insight into how a model’s structure (flat vs. convolutional) and regularization (dropout vs. additive noise) influence learning and generalization.
 
 # Introduction and Goal
